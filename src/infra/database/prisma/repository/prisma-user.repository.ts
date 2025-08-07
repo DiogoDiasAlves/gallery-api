@@ -29,7 +29,8 @@ export class PrismaUserRepository {
             nm_user: user.nm_user,
             nm_login: user.nm_login,
             vl_password: user.vl_password,
-            vl_salt: user.vl_salt
+            vl_salt: user.vl_salt,
+            nm_email: user.nm_email
       }
     }
 )
@@ -37,16 +38,19 @@ export class PrismaUserRepository {
     }
 
     async update(id: number, user: Partial<User>): Promise<User>{
+        const updateData: any = {};
+        
+        if (user.nm_user !== undefined) updateData.nm_user = user.nm_user;
+        if (user.nm_login !== undefined) updateData.nm_login = user.nm_login;
+        if (user.vl_password !== undefined) updateData.vl_password = user.vl_password;
+        if (user.vl_salt !== undefined) updateData.vl_salt = user.vl_salt;
+        if (user.nm_email !== undefined) updateData.nm_email = user.nm_email;
+        
         const userUpdate = await this.prisma.user.update({
             where: { 
                 id_user: id 
             },
-            data: {
-                nm_user: user.nm_user,
-                nm_login: user.nm_login,
-                vl_password: user.vl_password,
-                vl_salt: user.vl_salt
-            }
+            data: updateData
         });  
         return PrismaUserMapper.toDomain(userUpdate);
     }

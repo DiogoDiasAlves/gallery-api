@@ -3,6 +3,7 @@ import { Body, Controller, Delete, Get,NotFoundException,Param, Post, Put } from
 import { ListUsersUseCase } from '@/domain/use-case/user.use-case';
 import { ListUsersPresenter } from '../presenters/list-user.presenter';
 import { User } from '@/core/entities/user';
+import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
 
 @Controller('users')
 export class UserController {
@@ -22,16 +23,25 @@ export class UserController {
         }
         return ListUsersPresenter.toHTTP([user]);
     }
+    
     @Post('create')
-    async userCreate(@Body() body:User){
-        const user = await this.listUsersUseCase.userCreate(body);
-        return ListUsersPresenter.toHTTP([user]);
-
+    async userCreate(@Body() createUserDto: CreateUserDto){
+        const user = new User(
+            0, // id será gerado automaticamente
+            createUserDto.nm_user,
+            createUserDto.nm_login,
+            createUserDto.vl_password,
+            createUserDto.vl_salt,
+            createUserDto.nm_email
+        );
+        
+        const createdUser = await this.listUsersUseCase.userCreate(user);
+        return ListUsersPresenter.toHTTP([createdUser]);
     }
 
     @Put(':id')
-    async userUpdate(@Param('id') id:number, @Body() body:Partial<User>){
-        const user = await this.listUsersUseCase.userUpdate(id, body);
+    async userUpdate(@Param('id') id:number, @Body() updateUserDto: UpdateUserDto){
+        const user = await this.listUsersUseCase.userUpdate(id, updateUserDto);
         return ListUsersPresenter.toHTTP([user]);
     }
 

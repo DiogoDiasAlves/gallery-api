@@ -7,6 +7,7 @@ export class ListUsersPresenter {
             id: user.id,
             name: user.nm_user,
             login: user.nm_login,
+            email: user.nm_email,
             createdAt: user.createdAt
         }));
     }

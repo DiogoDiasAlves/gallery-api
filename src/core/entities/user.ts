@@ -1,6 +1,4 @@
 export class User {
-
-
   constructor(
     private readonly id_user: Number,
     public nm_user: string,
