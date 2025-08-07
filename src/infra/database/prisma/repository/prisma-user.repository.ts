@@ -1,4 +1,3 @@
-// infra/database/prisma/repository/prisma-user.repository.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { User } from '@/core/entities/user';
@@ -27,11 +26,10 @@ export class PrismaUserRepository {
         {data: {
             
             
-            nm_user: user.nm_name,
+            nm_user: user.nm_user,
             nm_login: user.nm_login,
             vl_password: user.vl_password,
-            vl_salt: user.vl_salt,
-            dt_created: user.createdAt
+            vl_salt: user.vl_salt
       }
     }
 )
@@ -44,7 +42,7 @@ export class PrismaUserRepository {
                 id_user: id 
             },
             data: {
-                nm_user: user.nm_name,
+                nm_user: user.nm_user,
                 nm_login: user.nm_login,
                 vl_password: user.vl_password,
                 vl_salt: user.vl_salt

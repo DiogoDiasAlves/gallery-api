@@ -10,17 +10,18 @@ export class PrismaUserMapper {
             prismaUser.nm_login,
             prismaUser.vl_password,
             prismaUser.vl_salt,
-            prismaUser.dt_created    
+            prismaUser.dt_created.toISOString(),
         );
     }
 
     static toPrisma(user: User) {
         return {
             id_user: user.id,
-            nm_user: user.nm_name,
+            nm_user: user.nm_user,
             nm_login: user.nm_login,
             vl_password: user.vl_password,
             vl_salt: user.vl_salt,
+            nm_email: user.nm_email,
             dt_created: user.createdAt
         };
     }

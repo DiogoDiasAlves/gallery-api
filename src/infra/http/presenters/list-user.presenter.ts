@@ -5,7 +5,7 @@ export class ListUsersPresenter {
     static toHTTP(users: User[]) {
         return users.map(user => ({
             id: user.id,
-            name: user.nm_name,
+            name: user.nm_user,
             login: user.nm_login,
             createdAt: user.createdAt
         }));
