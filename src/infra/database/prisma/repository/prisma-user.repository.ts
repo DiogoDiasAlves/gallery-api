@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { User } from '@/core/entities/user';
 import { PrismaUserMapper } from '../mappers/user.mapper';
@@ -22,18 +22,26 @@ export class PrismaUserRepository {
     }
 
     async create(user: User) : Promise<User>{
-      const createUser = await this.prisma.user.create(     
-        {data: {
-            
-            
-            nm_user: user.nm_user,
-            nm_login: user.nm_login,
-            vl_password: user.vl_password,
-            vl_salt: user.vl_salt,
-            nm_email: user.nm_email
-      }
-    }
-)
+        
+        const emailExists = await this.prisma.user.findUnique({where: {nm_email: user.nm_email}});
+        if(emailExists){
+            throw new ConflictException('This email is already in use');
+        }
+        const loginExists = await this.prisma.user.findUnique({where: {nm_login: user.nm_login}});
+        if(loginExists){
+            throw new ConflictException('This login is already in use');
+        }
+        
+        const createUser = await this.prisma.user.create(     
+            {data: {
+                nm_user: user.nm_user,
+                nm_login: user.nm_login,
+                vl_password: user.vl_password,
+                vl_salt: user.vl_salt,
+                nm_email: user.nm_email
+          }
+        }
+    )
       return PrismaUserMapper.toDomain(createUser);
     }
 

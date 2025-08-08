@@ -9,7 +9,7 @@ export class UploadImgController {
         private uploadImgUseCase: UploadImgUseCase
     ) { }
 
-    // @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard)
     @Post('upload')
     @UseInterceptors(FileInterceptor('file'))
     uploadImage(@UploadedFile() file: Express.Multer.File, @Request() req: any) {

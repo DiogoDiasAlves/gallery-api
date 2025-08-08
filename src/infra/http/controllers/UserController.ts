@@ -34,7 +34,6 @@ export class UserController {
             createUserDto.vl_salt,
             createUserDto.nm_email
         );
-        
         const createdUser = await this.listUsersUseCase.userCreate(user);
         return ListUsersPresenter.toHTTP([createdUser]);
     }

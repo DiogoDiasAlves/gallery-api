@@ -28,5 +28,9 @@ export class ListImageUseCase {
     async imagedelete(id: number): Promise<void>{
         return await this.imageRepository.delete(id)
     }
+
+    async imageFindAllByUser(userId: number): Promise<Image[]> {
+        return await this.imageRepository.findAllImagesByUser(userId);
+    }
     
 }
