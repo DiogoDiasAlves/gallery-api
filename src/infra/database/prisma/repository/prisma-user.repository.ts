@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { User } from '@/core/entities/user';
 import { PrismaUserMapper } from '../mappers/user.mapper';
@@ -71,6 +71,16 @@ export class PrismaUserRepository {
         if (!user) {
             throw new Error('Usuário não encontrado');
         }
+
+            const userImages = await this.prisma.image.findMany({
+      where: { id_user: user.id_user },
+    });
+
+          if (userImages.length > 0) {
+      throw new BadRequestException(
+        'O usuário possui imagens salvas. Exclua todas as imagens antes de deletar o usuário.'
+      );
+    }
         
         await this.prisma.user.delete({
             where: { id_user: id }

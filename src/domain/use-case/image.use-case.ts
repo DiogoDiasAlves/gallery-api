@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IImageRepository } from '../Enterprise/repository/image.repository';
 import { Image } from 'src/core/entities/image';
+import { User } from 'src/core/entities/user';
 
 
 
@@ -25,10 +26,9 @@ export class ListImageUseCase {
         return await this.imageRepository.upload(image)
     }
 
-    async imagedelete(id: number): Promise<void>{
-        return await this.imageRepository.delete(id)
-    }
-
+    async imagedelete(id: number, userId: number): Promise<void> {
+    return await this.imageRepository.delete(id, userId);
+}
     async imageFindAllByUser(userId: number): Promise<Image[]> {
         return await this.imageRepository.findAllImagesByUser(userId);
     }

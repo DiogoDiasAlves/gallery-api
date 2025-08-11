@@ -6,7 +6,7 @@ export abstract class IImageRepository {
     abstract findById(id: number): Promise<Image | null>;
     abstract getImageFile(id: number): Promise<Buffer>;
     abstract upload(image: Partial<Image>): Promise<Image>;
-    abstract delete(id: number): Promise<void>; 
+    abstract delete(id: number, userId: number): Promise<void>;
 }
 
 

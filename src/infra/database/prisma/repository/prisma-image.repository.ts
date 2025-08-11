@@ -1,9 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { PrismaImageMapper } from '../mappers/image.mapper';
 import { Image } from '@/core/entities/image';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+
+interface IreqProps {
+    name: string;
+    email: string;
+    user_id: number;
+    iat: number;
+    exp: number;
+}
 
 @Injectable()
 export class PrismaImageRepository {
@@ -60,19 +68,24 @@ export class PrismaImageRepository {
 
 
 
-   async imageDelete(id: number): Promise<void> {
-    const images = await this.prisma.image.findUnique({
-        where: { id_image: id }
-    });
+   async delete(id: number, userId: number): Promise<void> {
+        const image = await this.prisma.image.findUnique({
+            where: { id_image: id }
+        });
 
-    if (!images) {
-        throw new Error('Imagem não encontrada');
+        if (!image) {
+            throw new Error('Imagem não encontrada');
+        }
+
+        if (image.id_user !== userId) {
+            throw new ForbiddenException('Você não pode deletar a imagem de outra pessoa');
+        }
+
+        await this.prisma.image.delete({
+            where: { id_image: id }
+        });
     }
-
-   await this.prisma.image.delete({
-       where: { id_image: id }
-   });
-   }
+   
 
     async findAllImagesByUser(userId: number): Promise<Image[]> {
         const images = await this.prisma.image.findMany({
@@ -82,4 +95,5 @@ export class PrismaImageRepository {
         });
         return images.map(image => PrismaImageMapper.toDomain(image));
     }
-    }
+
+}
