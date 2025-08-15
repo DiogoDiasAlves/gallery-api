@@ -24,7 +24,6 @@ async function hashPassword(password) {
   }
 }
 
-// Função para verificar uma senha contra um hash
 async function verifyPassword(password, hashedPassword) {
   try {
     const isValid = await bcrypt.compare(password, hashedPassword);
@@ -38,7 +37,7 @@ async function verifyPassword(password, hashedPassword) {
   }
 }
 
-// Exemplo de uso
+
 async function main() {
   const senha = 'minhaSenha123';
   
@@ -52,7 +51,7 @@ async function main() {
   await verifyPassword('senhaErrada', hash);
 }
 
-// Executa o script se for chamado diretamente
+
 if (require.main === module) {
   main().catch(console.error);
 }

@@ -11,7 +11,7 @@ if (!password) {
 
 async function generateHash() {
   try {
-    // Gera o hash usando a mesma configuração do AuthService
+    
     const hashedPassword = await bcrypt.hash(password, 10);
     
     console.log('\n=== Hash Gerado ===');
@@ -19,7 +19,7 @@ async function generateHash() {
     console.log('Hash:', hashedPassword);
     console.log('\n=== Teste de Verificação ===');
     
-    // Testa se o hash funciona
+    
     const isValid = await bcrypt.compare(password, hashedPassword);
     console.log('Hash válido:', isValid ? '✅ Sim' : '❌ Não');
     
