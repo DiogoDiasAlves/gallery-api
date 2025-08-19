@@ -1,21 +1,35 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards, Request, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards,Req } from '@nestjs/common';
 import { ListImageUseCase } from '@/domain/use-case/image.use-case';
 import { ListImagePresenter } from '../presenters/list-image.presenter';
 import { Image } from '@/core/entities/image';
 import { AuthGuard } from '../../auth/auth.guard';
 import { ListUsersUseCase } from '@/domain/use-case/user.use-case';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import type { Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('image')
 export class ImageController {
-    constructor(private listImageUseCase: ListImageUseCase, private listUsersUseCase: ListUsersUseCase) { }
+    constructor(private listImageUseCase: ListImageUseCase, private listUsersUseCase: ListUsersUseCase, private readonly jwtService: JwtService) { }
 
     @Get()
     @ApiOperation({ summary: 'List all images' })
     @ApiParam({ name: 'id', type: String, description: 'ID of the image to retrieve' })
     @ApiResponse({ status: 200, description: 'Return all images.' })
-    async findAll() {
-        const image = await this.listImageUseCase.imageFindAll();
+    @UseGuards(AuthGuard)
+    async findAll(@Req() req: Request) {
+        
+
+        const resp = req.headers.authorization;
+        const token = resp?.split(' ')[1];
+        if (!token) {
+            throw new NotFoundException('Token não encontrado');
+        }
+        const decoded: any = this.jwtService.verify(token);
+        const userId = decoded.user_id; 
+        console.log(token);
+        
+        const image = await this.listImageUseCase.imageFindAll(userId);
         return ListImagePresenter.toHTTP(image);
     }
 
@@ -24,7 +38,7 @@ export class ImageController {
     @ApiParam({ name: 'userId', type: String, description: 'ID of the user to retrieve images for' })
     @ApiResponse({ status: 200, description: 'Return all images of the authenticated user.' })
     @UseGuards(AuthGuard)
-    async findMyImages(@Request() req: any) {
+    async findMyImages(@Req() req: any) {
         const userId = req.user.user_id;
 
 
@@ -56,7 +70,7 @@ export class ImageController {
         return ListImagePresenter.toHTTP([image]);
     }
 
-    @UseGuards(AuthGuard)
+   @UseGuards(AuthGuard)
     @Delete(':id')
     @ApiOperation({ summary: 'Delete image by ID' })
     @ApiParam({ name: 'id', type: String, description: 'ID of the image to delete' })

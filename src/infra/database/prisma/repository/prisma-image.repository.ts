@@ -17,8 +17,12 @@ interface IreqProps {
 export class PrismaImageRepository {
     constructor(private prisma: PrismaService) { }
 
-    async findAll(): Promise<Image[]> {
-        const images = await this.prisma.image.findMany();
+    async findAll(user_id: number): Promise<Image[]> {
+        const images = await this.prisma.image.findMany({
+            where: {
+                id_user: user_id
+            }
+        });
         return images.map(image => PrismaImageMapper.toDomain(image));
     }
 

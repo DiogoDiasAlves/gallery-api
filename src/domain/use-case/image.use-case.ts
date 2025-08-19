@@ -9,8 +9,8 @@ import { User } from 'src/core/entities/user';
 export class ListImageUseCase {
     constructor(private imageRepository: IImageRepository) {}
 
-    async imageFindAll(): Promise<Image[]> {
-        return await this.imageRepository.findAll();
+    async imageFindAll(user_id:number): Promise<Image[]> {
+        return await this.imageRepository.findAll(user_id);
     }
 
     async imageFindById(id: number): Promise<Image | null>{
